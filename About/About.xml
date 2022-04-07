@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>GitUpdater</name>
+  <author>Jamesthe1</author>
+  <supportedVersions>
+    <li>1.3</li>
+  </supportedVersions>
+  <packageId>Jamesthe1.RimWorld.GitUpdater</packageId>
+  <description>
+Automatically updates mods, both those in RimWorld's Mods folder as well as ones from the Steam Workshop.
+
+Created using LibGit2Sharp.
+  </description>
+  <modDependencies>
+  </modDependencies>
+  <loadBefore>
+    <li>Ludeon.RimWorld</li>
+  </loadBefore>
+</ModMetaData>
