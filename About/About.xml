@@ -9,7 +9,8 @@
   <description>
 Automatically updates mods, both those in RimWorld's Mods folder as well as ones from the Steam Workshop.
 
-Created using LibGit2Sharp.
+Created using LibGit2Sharp at https://github.com/Jamesthe1/libgit2sharp.
+GitHub: https://github.com/Jamesthe1/GitUpdater
   </description>
   <modDependencies>
   </modDependencies>
