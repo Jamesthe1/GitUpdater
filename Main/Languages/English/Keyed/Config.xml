@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <GU.RequireManual>Require manually updating repositories</GU.RequireManual>
+  <GU.PruneOld>Prune old/obsolete branches</GU.PruneOld>
+  <GU.Repos>Repositories</GU.Repos>
+  <GU.Add>Add</GU.Add>
+  <GU.ManualUpdate>Update</GU.ManualUpdate>
+  <GU.RestartRequired>The game must be restarted to read changes.</GU.RestartRequired>
+  <GU.Back>Back</GU.Back>
+  <GU.Blacklist>Blacklist</GU.Blacklist>
+  <GU.Whitelist>Whitelist</GU.Whitelist>
+</LanguageData>
