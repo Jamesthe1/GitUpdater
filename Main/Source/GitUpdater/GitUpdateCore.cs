@@ -10,7 +10,6 @@ namespace GitUpdater {
     public static class GitUpdateCore {
         // IF YOU ARE FORKING THIS, PLEASE EDIT THIS DATA
         private const string email = "james.inness.work@gmail.com";
-        private const string prefix = "Jamesthe1.RimWorld";
         public const string modName = "GitUpdater";
 
         public enum LogMode {
@@ -20,7 +19,7 @@ namespace GitUpdater {
         }
 
         public static string GetID () {
-            return $"{prefix}.{modName}";
+            return ModLister.AllInstalledMods.First (m => m.Active && m.Name == modName).PackageId;
         }
 
         public static void LogMsg (string message, LogMode mode) {
