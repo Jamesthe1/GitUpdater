@@ -11,19 +11,23 @@ namespace GitUpdater {
         private const string prefix = "Jamesthe1.RimWorld";
         public const string modName = "GitUpdater";
 
+        private static string MessageOfMod (string message) {
+            return $"[{modName}] {message}";
+        }
+
         private static void LogEvent (string message) {
-            Log.Message ($"[{modName}] {message}");
+            Log.Message (MessageOfMod (message));
         }
 
         private static void LogError (string message) {
-            Log.Error (message);
+            Log.Error (MessageOfMod (message));
         }
 
         private static void CheckForRepoUpdates (Repository repo) {
             var remote = repo.Network.Remotes["origin"];
 
             if (remote == null) {
-                LogEvent ($"Repository has no origin, skipping");
+                LogEvent ("Repository has no origin, skipping");
                 return;
             }
 
@@ -75,8 +79,8 @@ namespace GitUpdater {
             ModMetaData thisMod =  ModLister.GetActiveModWithIdentifier ($"{prefix}.{modName}");
             string gameDir = Directory.GetCurrentDirectory ();
 
+			// Change directory temporarily to our mod so that our DLL can fetch natives inside Natives.
             Directory.SetCurrentDirectory (thisMod.RootDir.FullName);
-            LogEvent ($"Natives are now at {Path.GetFullPath ("./Main/Natives")}");
             UpdateRepos ();
             Directory.SetCurrentDirectory (gameDir);
         }
