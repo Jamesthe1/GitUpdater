@@ -158,10 +158,10 @@ namespace GitUpdater {
                             GitUpdateCore.UpdateRepos (settings.listHandling);
                             needsRestart = true;
                         }
-
-                        if (needsRestart)
-                            listingStd.Label ("GU.RestartRequired".Translate ());
                     }
+
+                    if (needsRestart)
+                        listingStd.Label ("GU.RestartRequired".Translate ());
 
                     break;
                 case MenuMode.AddMod:
