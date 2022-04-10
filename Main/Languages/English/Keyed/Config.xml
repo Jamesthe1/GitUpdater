@@ -9,4 +9,12 @@
   <GU.Back>Back</GU.Back>
   <GU.Blacklist>Blacklist</GU.Blacklist>
   <GU.Whitelist>Whitelist</GU.Whitelist>
+  
+  <GU.FCStrat>Strategy on file conflicts:</GU.FCStrat>
+  <GU.FC.Normal>Normal</GU.FC.Normal>
+  <GU.FC.Ours>Choose ours</GU.FC.Ours>
+  <GU.FC.Theirs>Choose theirs</GU.FC.Theirs>
+  <GU.FC.Merge>Try merge</GU.FC.Merge>
+  <GU.FC.Diff3>Diff3</GU.FC.Diff3>
+  <GU.Diff3Implement>WARNING: Diff3 has not been implemented yet and will likely cause problems</GU.Diff3Implement>
 </LanguageData>

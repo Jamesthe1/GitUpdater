@@ -7,6 +7,8 @@ using Verse;
 using LibGit2Sharp;
 
 namespace GitUpdater {
+    using IDActions = Dictionary<string, Action>;
+
     public class UpdaterMod : Mod {
         public class Settings : ModSettings {
             public enum ListMode {
@@ -15,24 +17,18 @@ namespace GitUpdater {
             }
 
             public bool requireManual = false;
-            public List<string> repoList = new List<string>() { GitUpdateCore.GetID () };
-            public ListMode listHandling = ListMode.Blacklist;
             public bool pruneOld = true;
+            public CheckoutFileConflictStrategy onFileConflict = CheckoutFileConflictStrategy.Normal;
+            public List<string> repoList = new List<string> () { GitUpdateCore.GetID () };
+            public ListMode listHandling = ListMode.Blacklist;
 
             public override void ExposeData () {
                 Scribe_Values.Look (ref requireManual, nameof (requireManual));
+                Scribe_Values.Look (ref pruneOld, nameof (pruneOld));
+                Scribe_Values.Look (ref onFileConflict, nameof (onFileConflict));
                 Scribe_Collections.Look (ref repoList, nameof (repoList));
                 Scribe_Values.Look (ref listHandling, nameof (listHandling));
-                Scribe_Values.Look (ref pruneOld, nameof (pruneOld));
                 base.ExposeData ();
-            }
-
-            public static string LMString (ListMode mode) {
-                return "GU." + mode.ToString ();
-            }
-
-            public static TaggedString LMStringTranslated (ListMode mode) {
-                return LMString (mode).Translate ();
             }
         }
 
@@ -102,6 +98,29 @@ namespace GitUpdater {
             listingStd.Gap (area.height);
         }
 
+        public static IDActions GenerateActions<TEnum> (Action<TEnum> action, string extraPrefix = "") where TEnum : Enum {
+            TEnum[] vals = (TEnum[])Enum.GetValues (typeof (TEnum));
+            IEnumerable<string> names = vals.Select (v => GitUpdateCore.PrefixTranslateItem (v, extraPrefix));
+
+            IDActions idActions = new IDActions ();
+            for (int i = 0; i < vals.Length; i++) {
+                TEnum val = vals[i];
+                string name = names.ElementAt (i);
+
+                idActions.Add (name, () => action (val));
+            }
+            return idActions;
+        }
+
+        private List<FloatMenuOption> GenerateFloatOptions<TEnum> (Action<TEnum> action, string extraPrefix = "") where TEnum : Enum {
+            var enumerable = GenerateActions (action, extraPrefix).Select (kv => new FloatMenuOption (kv.Key, kv.Value));
+            return new List<FloatMenuOption> (enumerable);
+        }
+
+        private void PresentFloatOptions<TEnum> (Action<TEnum> action, string extraPrefix = "") where TEnum : Enum {
+            var options = GenerateFloatOptions (action, extraPrefix);
+            Find.WindowStack.Add (new FloatMenu (options));
+        }
         public override void DoSettingsWindowContents (Rect rect) {
             Rect TopHalf = rect.TopHalf ();
             TopHalf.LeftHalf ();
@@ -120,35 +139,32 @@ namespace GitUpdater {
                 case MenuMode.Main:
                     listingStd.CheckboxLabeled ("GU.RequireManual".Translate (), ref settings.requireManual);
                     listingStd.CheckboxLabeled ("GU.PruneOld".Translate (), ref settings.pruneOld);
+                    bool chooseConflict = listingStd.LabeledButton ("GU.FCStrat".Translate (), GitUpdateCore.PrefixTranslateItem (settings.onFileConflict, "FC"), rect.width, 0.25f, 5f);
+                    listingStd.Label ("GU.Diff3Implement".Translate ().Colorize (Color.red));
+
+                    if (chooseConflict)
+                        PresentFloatOptions<CheckoutFileConflictStrategy> (cfs => settings.onFileConflict = cfs, "FC");
 
                     listingStd.Label ("GU.Repos".Translate ());
                     // Temp cache since we don't want to do much
                     List<ModMetaData> savedMods = settings.repoList.ConvertAll (id => ModLister.GetModWithIdentifier (id));
                     ListMods ( listingStd,
                                m => IsSavedRepo (m),
-                               m => settings.repoList.Remove (m.PackageId),
+                               m => { settings.repoList.Remove (m.PackageId);
+                                      reposCached = false; // Bugfix for list not updating on removal of an item
+                                    },
                                modsArea,
                                ref savedMods,
                                ref savedReposCached
                              );
 
-                    float padding = 5;
-                    float halfWidth = rect.width / 2;
-                    bool add = Widgets.ButtonText (new Rect (padding, listingStd.CurHeight, halfWidth - padding, ITEM_HEIGHT),
-                                                   "GU.Add".Translate ()
-                                                  );
-                    if (add)
+                    bool[] listMgrRow = listingStd.ButtonTextRow ( new TaggedString[] { "GU.Add".Translate (), GitUpdateCore.PrefixTranslateItem (settings.listHandling) },
+                                                                   rect.width, 5f, ITEM_HEIGHT
+                                                                 );
+                    if (listMgrRow[0])
                         menu = MenuMode.AddMod;
-                    bool switchList = Widgets.ButtonText (new Rect (halfWidth + padding, listingStd.CurHeight, halfWidth - padding, ITEM_HEIGHT),
-                                                          Settings.LMStringTranslated (settings.listHandling)
-                                                         );
-                    if (switchList) {
-                        var floatOptions = new List<FloatMenuOption> () { new FloatMenuOption (Settings.LMStringTranslated (Settings.ListMode.Blacklist), () => settings.listHandling = Settings.ListMode.Blacklist),
-                                                                          new FloatMenuOption (Settings.LMStringTranslated (Settings.ListMode.Whitelist), () => settings.listHandling = Settings.ListMode.Whitelist)
-                                                                        };
-                        Find.WindowStack.Add (new FloatMenu (floatOptions));
-                    }
-                    listingStd.Gap (ITEM_HEIGHT);
+                    if (listMgrRow[1])
+                        PresentFloatOptions<Settings.ListMode> (lm => settings.listHandling = lm);
 
                     if (settings.requireManual) {
                         listingStd.GapLine ();

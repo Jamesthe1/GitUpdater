@@ -11,11 +11,22 @@ namespace GitUpdater {
         // IF YOU ARE FORKING THIS, PLEASE EDIT THIS DATA
         private const string email = "james.inness.work@gmail.com";
         public const string modName = "GitUpdater";
+        private const string prefix = "GU";
 
         public enum LogMode {
             Event,
             Warn,
             Error
+        }
+
+        public static string PrefixItem<T> (T item, string extraPrefix = "") {
+            // Inline automatically does ToString for us
+            string itemName = extraPrefix == "" ? item.ToString () : $"{extraPrefix}.{item}";
+            return $"{prefix}.{itemName}";
+        }
+
+        public static string PrefixTranslateItem<T> (T item, string extraPrefix = "") {
+            return PrefixItem (item, extraPrefix).Translate ();
         }
 
         public static string GetID () {
@@ -56,6 +67,7 @@ namespace GitUpdater {
 
             var mOptions = new MergeOptions ();
             mOptions.CommitOnSuccess = true;
+            mOptions.FileConflictStrategy = UpdaterMod.settings.onFileConflict;
 
             var sig = new Signature (new Identity (modName, email), DateTimeOffset.Now);
 
