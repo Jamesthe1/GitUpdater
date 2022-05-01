@@ -136,6 +136,7 @@ namespace GitUpdater {
             Directory.SetCurrentDirectory (modDir);
             #if DEBUG
             LogMsg ($"Game directory is now {Directory.GetCurrentDirectory ()}", LogMode.Event);
+            LogMsg ($"Expecting library at {Path.GetFullPath ("./Main/Natives/git2-b7bad55")}", LogMode.Event);
             #endif
 
             // Test run, doesn't matter what we do so long as it initializes.
