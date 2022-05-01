@@ -9,7 +9,7 @@
   <description>
 Automatically updates mods with git repositories, both those in RimWorld's Mods folder as well as ones from the Steam Workshop.
 
-Now with a config menu! This can set whether it should update on startup, what mods can be whitelisted/blacklisted, and whether or not to prune old branches.
+Now with a config menu! This can set whether it should update on startup, what mods can be whitelisted/blacklisted, how conflicts are resolved, and whether or not to prune old branches.
 
 Created using LibGit2Sharp at https://github.com/Jamesthe1/libgit2sharp.
 GitHub: https://github.com/Jamesthe1/GitUpdater
