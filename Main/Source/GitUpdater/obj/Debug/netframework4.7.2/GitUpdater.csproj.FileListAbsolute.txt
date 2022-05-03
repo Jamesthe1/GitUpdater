@@ -68,3 +68,4 @@ C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\GitUpdater\Main\Sour
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\obj\Debug\netframework4.7.2\GitUpdater.dll
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\obj\Debug\netframework4.7.2\GitUpdater.pdb
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\git2-b7bad55.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\libgit2-b7bad55.so
