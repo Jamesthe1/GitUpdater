@@ -6,8 +6,7 @@
     <li>1.3</li>
   </supportedVersions>
   <packageId>Jamesthe1.RimWorld.GitUpdater</packageId>
-  <description>
-Automatically updates mods with git repositories, both those in RimWorld's Mods folder as well as ones from the Steam Workshop.
+  <description>Automatically updates mods with git repositories, both those in RimWorld's Mods folder as well as ones from the Steam Workshop.
 
 Now with a config menu! This can set whether it should update on startup, what mods can be whitelisted/blacklisted, how conflicts are resolved, and whether or not to prune old branches.
 
@@ -16,7 +15,7 @@ GitHub: https://github.com/Jamesthe1/GitUpdater
   </description>
   <modDependencies>
   </modDependencies>
-  <loadBefore>
+  <loadAfter>
     <li>Ludeon.RimWorld</li>
-  </loadBefore>
+  </loadAfter>
 </ModMetaData>
