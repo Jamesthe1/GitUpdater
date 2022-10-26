@@ -4,6 +4,7 @@
   <author>Jamesthe1</author>
   <supportedVersions>
     <li>1.3</li>
+	<li>1.4</li>
   </supportedVersions>
   <packageId>Jamesthe1.RimWorld.GitUpdater</packageId>
   <description>Automatically updates mods with git repositories, both those in RimWorld's Mods folder as well as ones from the Steam Workshop.

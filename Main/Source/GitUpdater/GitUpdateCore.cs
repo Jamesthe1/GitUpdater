@@ -4,6 +4,7 @@ using System.IO;
 
 using Verse;
 using LibGit2Sharp;
+using System.Collections.Generic;
 
 namespace GitUpdater {
     using ListMode = UpdaterMod.Settings.ListMode;
@@ -84,37 +85,51 @@ namespace GitUpdater {
             }
 
             try {
-                repo.MergeFetchedRefs (sig, mOptions);
+                MergeResult rslt = repo.MergeFetchedRefs (sig, mOptions);
+                switch (rslt.Status) {
+                    case MergeStatus.UpToDate:
+                        LogMsg ("Repo already up-to-date.", LogMode.Event);
+                        return;
+                    case MergeStatus.FastForward:
+                        LogMsg ($"Fast-forwarded to new head {repo.Head.FriendlyName}.", LogMode.Event);
+                        return;
+                    case MergeStatus.NonFastForward:
+                        LogMsg ($"Non-fast-forward to new head {repo.Head.FriendlyName}.", LogMode.Event);
+                        return;
+                    case MergeStatus.Conflicts:
+                        LogMsg ($"Conflicts appeared during merge. You may have to implement these manually, or do it quick and dirty by using the \"{ "GU.FC.Theirs".Translate () }\" option.", LogMode.Warn);
+                        return;
+                }
             }
             catch (Exception e) {
                 LogMsg ($"Could not merge updates from repo: {e.Message}", LogMode.Error);
-                return;
             }
+        }
 
-            LogMsg ("Repository updated.", LogMode.Event);
+        public static List<ModMetaData> GetModsOfCondition (Func<ModMetaData, bool> condition) {
+            return ModLister.AllInstalledMods
+                    .Where (condition)
+                    .ToList ();
         }
 
         public static void UpdateRepos (ListMode listMode) {
-            LogMsg ($"Searching for repos out of {ModLister.AllInstalledMods.Count ()} mods (Mode: {listMode})", LogMode.Event);
-            foreach (ModMetaData mod in ModLister.AllInstalledMods) {
+            Func<ModMetaData, bool> condition = null;
+            switch (listMode) {
+                case ListMode.Whitelist:
+                    condition = UpdaterMod.IsSavedRepo;
+                    break;
+                case ListMode.Blacklist:
+                    condition = UpdaterMod.IsUnsavedRepo;
+                    break;
+                default:
+                    throw new NotImplementedException ("Unknown list mode");
+            }
+            List<ModMetaData> mods = GetModsOfCondition (condition);
+            LogMsg ($"Looking for updates in {mods.Count ()} mod(s) (Mode: {listMode})", LogMode.Event);
+
+            foreach (ModMetaData mod in mods) {
                 string modPath = mod.RootDir.FullName;
-
-                bool isRepo;
-                switch (listMode) {
-                    case ListMode.Whitelist:
-                        isRepo = UpdaterMod.IsSavedRepo (mod);
-                        break;
-                    case ListMode.Blacklist:
-                        isRepo = UpdaterMod.IsUnsavedRepo (mod);
-                        break;
-                    default:
-                        throw new NotImplementedException ("Unknown list mode");
-                }
-
-                if (!isRepo)
-                    continue;
-
-                LogMsg ($"{mod.Name} has a git repo", LogMode.Event);
+                LogMsg ($"Analyzing {mod.Name}...", LogMode.Event);
                 using (var repo = new Repository (modPath)) {
                     CheckForRepoUpdates (repo);
                 }

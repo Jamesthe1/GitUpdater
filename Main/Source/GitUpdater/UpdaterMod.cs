@@ -72,20 +72,17 @@ namespace GitUpdater {
             Rect inner = new Rect (area);
             inner.width -= 20;
 
-            IEnumerable<ModMetaData> mods = ModLister.AllInstalledMods;
-            IEnumerable<ModMetaData> satisfiers;
             if (!isClean) {
-                cache = new List<ModMetaData> (mods.Where (condition));
+                cache = new List<ModMetaData> (GitUpdateCore.GetModsOfCondition (condition));
                 isClean = true;
             }
-            satisfiers = cache;
 
-            inner.height = satisfiers.Count () * ITEM_HEIGHT;
+            inner.height = cache.Count () * ITEM_HEIGHT;
 
             Rect itemRect = new Rect (0f, area.y, inner.width, ITEM_HEIGHT);
 
             Widgets.BeginScrollView (area, ref scrollPos, inner);
-            foreach (ModMetaData mod in satisfiers) {
+            foreach (ModMetaData mod in cache) {
                 bool isPressed = Widgets.ButtonText (itemRect, mod.Name);
                 itemRect.y += ITEM_HEIGHT;
                 if (isPressed) {
