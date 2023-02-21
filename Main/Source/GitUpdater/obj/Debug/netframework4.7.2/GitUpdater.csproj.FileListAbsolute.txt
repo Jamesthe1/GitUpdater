@@ -70,3 +70,39 @@ C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\GitUpdater\Main\Sour
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\git2-b7bad55.dll
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\libgit2-b7bad55.so
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\obj\Debug\netframework4.7.2\GitUpdater.csproj.CopyComplete
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\git2-b7bad55.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\libgit2-b7bad55.so
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\GitUpdater.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\GitUpdater.pdb
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\Assembly-CSharp.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\LibGit2Sharp.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.CoreModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.TextCoreModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.TextRenderingModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.IMGUIModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\NAudio.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\NVorbis.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.AudioModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\com.rlabrecque.steamworks.net.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\Assembly-CSharp-firstpass.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.AssetBundleModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.PhysicsModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\Unity.TextMeshPro.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\ISharpZipLib.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.InputLegacyModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.PerformanceReportingModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.ImageConversionModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.ScreenCaptureModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.UI.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.SharedInternalsModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.UIModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.Physics2DModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\bin\Debug\netframework4.7.2\UnityEngine.AnimationModule.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\obj\Debug\netframework4.7.2\GitUpdater.csproj.AssemblyReference.cache
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\obj\Debug\netframework4.7.2\GitUpdater.GeneratedMSBuildEditorConfig.editorconfig
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\obj\Debug\netframework4.7.2\GitUpdater.AssemblyInfoInputs.cache
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\obj\Debug\netframework4.7.2\GitUpdater.AssemblyInfo.cs
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\obj\Debug\netframework4.7.2\GitUpdater.csproj.CoreCompileInputs.cache
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\obj\Debug\netframework4.7.2\GitUpdater.csproj.CopyComplete
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\obj\Debug\netframework4.7.2\GitUpdater.dll
+F:\Games\steamapps\common\RimWorld\Mods\GitUpdater\Main\Source\GitUpdater\obj\Debug\netframework4.7.2\GitUpdater.pdb

@@ -64,6 +64,12 @@ namespace GitUpdater {
 
             if (!settings.requireManual)
                 GitUpdateCore.UpdateRepos (settings.listHandling);
+
+            // Cleanse any mods in our list that were removed
+            // Using ToList to create a copy; this will avoid the mysterious error "Collection was modified; enumeration operation may not execute."
+            foreach (string id in settings.repoList.ToList ())
+                if (ModLister.GetModWithIdentifier (id) == null)
+                    settings.repoList.Remove (id);
         }
 
         private void ListMods (Listing_Standard listingStd, Func<ModMetaData, bool> condition, Action<ModMetaData> buttonAction, Rect area, ref List<ModMetaData> cache, ref bool isClean) {
