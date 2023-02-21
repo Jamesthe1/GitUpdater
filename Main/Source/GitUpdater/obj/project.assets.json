@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\GitUpdater\\Main\\Source\\GitUpdater\\GitUpdater.csproj",
+      "projectUniqueName": "F:\\Games\\steamapps\\common\\RimWorld\\Mods\\GitUpdater\\Main\\Source\\GitUpdater\\GitUpdater.csproj",
       "projectName": "GitUpdater",
-      "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\GitUpdater\\Main\\Source\\GitUpdater\\GitUpdater.csproj",
+      "projectPath": "F:\\Games\\steamapps\\common\\RimWorld\\Mods\\GitUpdater\\Main\\Source\\GitUpdater\\GitUpdater.csproj",
       "packagesPath": "C:\\Users\\james\\.nuget\\packages\\",
-      "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\GitUpdater\\Main\\Source\\GitUpdater\\obj\\",
+      "outputPath": "F:\\Games\\steamapps\\common\\RimWorld\\Mods\\GitUpdater\\Main\\Source\\GitUpdater\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

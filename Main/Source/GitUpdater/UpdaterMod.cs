@@ -146,7 +146,7 @@ namespace GitUpdater {
                     // Temp cache since we don't want to do much
                     List<ModMetaData> savedMods = settings.repoList.ConvertAll (id => ModLister.GetModWithIdentifier (id));
                     ListMods ( listingStd,
-                               m => IsSavedRepo (m),
+                               IsSavedRepo,
                                m => { settings.repoList.Remove (m.PackageId);
                                       reposCached = false; // Bugfix for list not updating on removal of an item
                                     },
