@@ -17,6 +17,7 @@ namespace GitUpdater {
             }
 
             public bool requireManual = false;
+            public bool onlyLocal = true;
             public bool pruneOld = true;
             public CheckoutFileConflictStrategy onFileConflict = CheckoutFileConflictStrategy.Normal;
             public List<string> repoList = new List<string> () { GitUpdateCore.GetID () };
@@ -24,6 +25,7 @@ namespace GitUpdater {
 
             public override void ExposeData () {
                 Scribe_Values.Look (ref requireManual, nameof (requireManual));
+                Scribe_Values.Look (ref onlyLocal, nameof (onlyLocal));
                 Scribe_Values.Look (ref pruneOld, nameof (pruneOld));
                 Scribe_Values.Look (ref onFileConflict, nameof (onFileConflict));
                 Scribe_Collections.Look (ref repoList, nameof (repoList));
@@ -41,6 +43,7 @@ namespace GitUpdater {
         private List<ModMetaData> cachedRepos = new List<ModMetaData> ();
         private bool reposCached = false;
         private bool savedReposCached = true;
+        private bool lastLocalRuleState = true;     // Value "settings.onlyLocal" is inaccessible before constructing
 
         public enum MenuMode {
             Main,
@@ -57,13 +60,24 @@ namespace GitUpdater {
             return Repository.IsValid (mod.RootDir.FullName) && !IsSavedRepo (mod);
         }
 
+        /// <summary>
+        /// Used for checking if a mod can be updated, according to onlyLocal.
+        /// </summary>
+        /// <param name="mod">The mod metadata to inspect</param>
+        /// <param name="onlyLocal">Whether or not to restrict to local files only</param>
+        /// <returns>Whether or not the mod can be updated</returns>
+        public static bool CanBeUpdated (ModMetaData mod, bool onlyLocal) {
+            return !mod.OnSteamWorkshop || !onlyLocal;   // Same thing as "onlyLocal ? mod.SteamAppId == 0 : true", just with fewer steps
+        }
+
         public UpdaterMod (ModContentPack content) : base(content) {
             settings = GetSettings<Settings> ();
+            lastLocalRuleState = settings.onlyLocal;    // Require local update
             string isManualStr = settings.requireManual ? "not" : "automatically";
             GitUpdateCore.LogMsg ($"Settings loaded. Will {isManualStr} update repositories right now.", GitUpdateCore.LogMode.Event);
 
             if (!settings.requireManual)
-                GitUpdateCore.UpdateRepos (settings.listHandling);
+                GitUpdateCore.UpdateRepos (settings.listHandling, settings.onlyLocal);
 
             // Cleanse any mods in our list that were removed
             // Using ToList to create a copy; this will avoid the mysterious error "Collection was modified; enumeration operation may not execute."
@@ -79,7 +93,7 @@ namespace GitUpdater {
             inner.width -= 20;
 
             if (!isClean) {
-                cache = new List<ModMetaData> (GitUpdateCore.GetModsOfCondition (condition));
+                cache = new List<ModMetaData> (GitUpdateCore.GetModsOfCondition (m => condition (m) && CanBeUpdated (m, settings.onlyLocal)));
                 isClean = true;
             }
 
@@ -124,7 +138,15 @@ namespace GitUpdater {
             var options = GenerateFloatOptions (action, extraPrefix);
             Find.WindowStack.Add (new FloatMenu (options));
         }
+
         public override void DoSettingsWindowContents (Rect rect) {
+            // Cache needs to be refreshed if the option is changed
+            if (lastLocalRuleState != settings.onlyLocal) {
+                lastLocalRuleState = settings.onlyLocal;
+                savedReposCached = false;
+                reposCached = false;
+            }
+
             Rect TopHalf = rect.TopHalf ();
             TopHalf.LeftHalf ();
             TopHalf.RightHalf ();
@@ -141,6 +163,7 @@ namespace GitUpdater {
             switch (menu) {
                 case MenuMode.Main:
                     listingStd.CheckboxLabeled ("GU.RequireManual".Translate (), ref settings.requireManual);
+                    listingStd.CheckboxLabeled ("GU.OnlyLocal".Translate (), ref settings.onlyLocal);
                     listingStd.CheckboxLabeled ("GU.PruneOld".Translate (), ref settings.pruneOld);
                     bool chooseConflict = listingStd.LabeledButton ("GU.FCStrat".Translate (), GitUpdateCore.PrefixTranslateItem (settings.onFileConflict, "FC"), rect.width, 0.25f, 5f);
                     listingStd.Label ("GU.Diff3Implement".Translate ().Colorize (Color.red));
@@ -174,7 +197,7 @@ namespace GitUpdater {
 
                         bool doManual = listingStd.ButtonText ("GU.ManualUpdate".Translate ());
                         if (doManual) {
-                            GitUpdateCore.UpdateRepos (settings.listHandling);
+                            GitUpdateCore.UpdateRepos (settings.listHandling, settings.onlyLocal);
                             needsRestart = true;
                         }
                     }
@@ -186,7 +209,7 @@ namespace GitUpdater {
                 case MenuMode.AddMod:
                     // Only allow repositories not in our list
                     ListMods ( listingStd,
-                               m => IsUnsavedRepo (m),
+                               IsUnsavedRepo,
                                m => settings.repoList.Add (m.PackageId),
                                modsArea,
                                ref cachedRepos,

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
   <GU.RequireManual>Require manually updating repositories</GU.RequireManual>
+  <GU.OnlyLocal>Use local mods only</GU.OnlyLocal>
   <GU.PruneOld>Prune old/obsolete branches</GU.PruneOld>
   <GU.Repos>Repositories</GU.Repos>
   <GU.Add>Add</GU.Add>
