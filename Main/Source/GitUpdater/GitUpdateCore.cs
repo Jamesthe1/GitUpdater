@@ -142,7 +142,7 @@ namespace GitUpdater {
         static GitUpdateCore () {
             ModMetaData thisMod = ModLister.GetActiveModWithIdentifier (GetID ());
             string gameDir = Directory.GetCurrentDirectory ();
-            string modDir = thisMod.RootDir.FullName;
+            string modDir = thisMod.RootDir.FullName + "/Main/Natives";
 
             // Change directory temporarily to our mod so that our DLL can fetch natives inside Natives.
             Directory.SetCurrentDirectory (modDir);

@@ -23,16 +23,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="git2-b7bad55.dll">
+    <None Update="git2-a418d9d.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="libgit2-b7bad55.so">
+    <None Update="libgit2-a418d9d.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="rem Spaces are apparently needed between the path and end quote. Why Microsoft&#xD;&#xA;robocopy &quot;$(TargetDir) &quot; &quot;..\..\..\1.5\Assemblies &quot; $(TargetFileName) LibGit2Sharp.dll&#xD;&#xA;robocopy &quot;$(TargetDir) &quot; &quot;..\..\Natives&quot; git2-*.dll *.so&#xD;&#xA;rename ..\..\Natives\libgit2-b7bad55.so git2-b7bad55&#xD;&#xA;rmdir bin /S /Q&#xD;&#xA;if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25" />
+    <Exec Command="rem Spaces are apparently needed between the path and end quote. Why Microsoft&#xD;&#xA;robocopy &quot;$(TargetDir) &quot; &quot;..\..\..\1.5\Assemblies &quot; $(TargetFileName) LibGit2Sharp.dll&#xD;&#xA;.\movehashes.cmd &quot;$(TargetDir)&quot;&#xD;&#xA;rmdir bin /S /Q&#xD;&#xA;if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25" />
   </Target>
 
 </Project>
