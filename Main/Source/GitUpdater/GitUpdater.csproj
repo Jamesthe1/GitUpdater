@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="rem Spaces are apparently needed between the path and end quote. Why Microsoft&#xD;&#xA;robocopy &quot;$(TargetDir) &quot; &quot;..\..\..\1.5\Assemblies &quot; $(TargetFileName) LibGit2Sharp.dll&#xD;&#xA;.\movehashes.cmd &quot;$(TargetDir)&quot;&#xD;&#xA;rmdir bin /S /Q&#xD;&#xA;if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25" />
+    <Exec Command="rem Spaces are apparently needed between the path and end quote. Why Microsoft&#xD;&#xA;robocopy &quot;$(TargetDir) &quot; &quot;..\..\..\$(ConfigurationName)\Assemblies &quot; $(TargetFileName) LibGit2Sharp.dll&#xD;&#xA;.\movehashes.cmd &quot;$(TargetDir)&quot;&#xD;&#xA;rmdir bin /S /Q&#xD;&#xA;if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25" />
   </Target>
 
 </Project>
