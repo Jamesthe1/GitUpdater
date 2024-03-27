@@ -60,6 +60,15 @@ namespace GitUpdater {
             return Repository.IsValid (mod.RootDir.FullName) && !IsSavedRepo (mod);
         }
 
+        public void AddModRepo (ModMetaData mod) {
+            settings.repoList.Add (mod.PackageId);
+        }
+
+        public void RemoveModRepo (ModMetaData mod) {
+            settings.repoList.Remove (mod.PackageId);
+            reposCached = false;
+        }
+
         /// <summary>
         /// Used for checking if a mod can be updated, according to onlyLocal.
         /// </summary>
@@ -139,6 +148,68 @@ namespace GitUpdater {
             Find.WindowStack.Add (new FloatMenu (options));
         }
 
+        private void RenderMainMenu (Rect rect, Listing_Standard listingStd, Rect modsArea) {
+            listingStd.CheckboxLabeled ("GU.RequireManual".Translate (), ref settings.requireManual);
+            listingStd.CheckboxLabeled ("GU.OnlyLocal".Translate (), ref settings.onlyLocal);
+            listingStd.CheckboxLabeled ("GU.PruneOld".Translate (), ref settings.pruneOld);
+            bool chooseConflict = listingStd.LabeledButton ("GU.FCStrat".Translate (), GitUpdateCore.PrefixTranslateItem (settings.onFileConflict, "FC"), rect.width, 0.25f, 5f);
+            listingStd.Label ("GU.Diff3Implement".Translate ().Colorize (Color.red));
+
+            if (chooseConflict)
+                PresentFloatOptions<CheckoutFileConflictStrategy> (cfs => settings.onFileConflict = cfs, "FC");
+
+            listingStd.Label ("GU.Repos".Translate ());
+            // Temp cache since we don't want to do much
+            List<ModMetaData> savedMods = settings.repoList.ConvertAll (id => ModLister.GetModWithIdentifier (id));
+            ListMods (
+                listingStd,
+                IsSavedRepo,
+                RemoveModRepo,
+                modsArea,
+                ref savedMods,
+                ref savedReposCached
+            );
+
+            bool[] listMgrRow = listingStd.ButtonTextRow ( new TaggedString[] { "GU.Add".Translate (), GitUpdateCore.PrefixTranslateItem (settings.listHandling) },
+                                                            rect.width, 5f, ITEM_HEIGHT
+                                                            );
+            if (listMgrRow[0])
+                menu = MenuMode.AddMod;
+            if (listMgrRow[1])
+                PresentFloatOptions<Settings.ListMode> (lm => settings.listHandling = lm);
+
+            if (settings.requireManual) {
+                listingStd.GapLine ();
+
+                bool doManual = listingStd.ButtonText ("GU.ManualUpdate".Translate ());
+                if (doManual) {
+                    GitUpdateCore.UpdateRepos (settings.listHandling, settings.onlyLocal);
+                    needsRestart = true;
+                }
+            }
+
+            if (needsRestart)
+                listingStd.Label ("GU.RestartRequired".Translate ());
+        }
+
+        private void RenderAddMenu (Rect rect, Listing_Standard listingStd, Rect modsArea) {
+            // Only allow repositories not in our list
+            ListMods (
+                listingStd,
+                IsUnsavedRepo,
+                AddModRepo,
+                modsArea,
+                ref cachedRepos,
+                ref reposCached
+            );
+
+            listingStd.GapLine ();
+
+            bool goBack = listingStd.ButtonText ("GU.Back".Translate ());
+            if (goBack)
+                menu = MenuMode.Main;
+        }
+
         public override void DoSettingsWindowContents (Rect rect) {
             // Cache needs to be refreshed if the option is changed
             if (lastLocalRuleState != settings.onlyLocal) {
@@ -147,85 +218,21 @@ namespace GitUpdater {
                 reposCached = false;
             }
 
-            Rect TopHalf = rect.TopHalf ();
-            TopHalf.LeftHalf ();
-            TopHalf.RightHalf ();
-            Rect BottomHalf = rect.BottomHalf ();
-            BottomHalf.LeftHalf ();
-            BottomHalf.RightHalf ();
             var listingStd = new Listing_Standard ();
             var modsArea = new Rect (0f, 0f, rect.width, ITEM_HEIGHT * 10);
-
-            #region Menus
 
             listingStd.Begin (rect);
 
             switch (menu) {
                 case MenuMode.Main:
-                    listingStd.CheckboxLabeled ("GU.RequireManual".Translate (), ref settings.requireManual);
-                    listingStd.CheckboxLabeled ("GU.OnlyLocal".Translate (), ref settings.onlyLocal);
-                    listingStd.CheckboxLabeled ("GU.PruneOld".Translate (), ref settings.pruneOld);
-                    bool chooseConflict = listingStd.LabeledButton ("GU.FCStrat".Translate (), GitUpdateCore.PrefixTranslateItem (settings.onFileConflict, "FC"), rect.width, 0.25f, 5f);
-                    listingStd.Label ("GU.Diff3Implement".Translate ().Colorize (Color.red));
-
-                    if (chooseConflict)
-                        PresentFloatOptions<CheckoutFileConflictStrategy> (cfs => settings.onFileConflict = cfs, "FC");
-
-                    listingStd.Label ("GU.Repos".Translate ());
-                    // Temp cache since we don't want to do much
-                    List<ModMetaData> savedMods = settings.repoList.ConvertAll (id => ModLister.GetModWithIdentifier (id));
-                    ListMods ( listingStd,
-                               IsSavedRepo,
-                               m => { settings.repoList.Remove (m.PackageId);
-                                      reposCached = false; // Bugfix for list not updating on removal of an item
-                                    },
-                               modsArea,
-                               ref savedMods,
-                               ref savedReposCached
-                             );
-
-                    bool[] listMgrRow = listingStd.ButtonTextRow ( new TaggedString[] { "GU.Add".Translate (), GitUpdateCore.PrefixTranslateItem (settings.listHandling) },
-                                                                   rect.width, 5f, ITEM_HEIGHT
-                                                                 );
-                    if (listMgrRow[0])
-                        menu = MenuMode.AddMod;
-                    if (listMgrRow[1])
-                        PresentFloatOptions<Settings.ListMode> (lm => settings.listHandling = lm);
-
-                    if (settings.requireManual) {
-                        listingStd.GapLine ();
-
-                        bool doManual = listingStd.ButtonText ("GU.ManualUpdate".Translate ());
-                        if (doManual) {
-                            GitUpdateCore.UpdateRepos (settings.listHandling, settings.onlyLocal);
-                            needsRestart = true;
-                        }
-                    }
-
-                    if (needsRestart)
-                        listingStd.Label ("GU.RestartRequired".Translate ());
-
+                    RenderMainMenu (rect, listingStd, modsArea);
                     break;
                 case MenuMode.AddMod:
-                    // Only allow repositories not in our list
-                    ListMods ( listingStd,
-                               IsUnsavedRepo,
-                               m => settings.repoList.Add (m.PackageId),
-                               modsArea,
-                               ref cachedRepos,
-                               ref reposCached
-                             );
-
-                    listingStd.GapLine ();
-
-                    bool goBack = listingStd.ButtonText ("GU.Back".Translate ());
-                    if (goBack)
-                        menu = MenuMode.Main;
+                    RenderAddMenu (rect, listingStd, modsArea);
                     break;
             }
 
             listingStd.End ();
-            #endregion
 
             base.DoSettingsWindowContents (rect);
         }
