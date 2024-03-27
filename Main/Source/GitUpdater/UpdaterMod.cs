@@ -7,8 +7,6 @@ using Verse;
 using LibGit2Sharp;
 
 namespace GitUpdater {
-    using IDActions = Dictionary<string, Action>;
-
     public class UpdaterMod : Mod {
         public class Settings : ModSettings {
             public enum ListMode {
@@ -34,23 +32,7 @@ namespace GitUpdater {
             }
         }
 
-        private const int ITEM_HEIGHT = 30;
-
         public static Settings settings;
-        public static bool needsRestart = false;
-
-        private Vector2 scrollPos = Vector2.zero;
-        private List<ModMetaData> cachedRepos = new List<ModMetaData> ();
-        private bool reposCached = false;
-        private bool savedReposCached = true;
-        private bool lastLocalRuleState = true;     // Value "settings.onlyLocal" is inaccessible before constructing
-
-        public enum MenuMode {
-            Main,
-            AddMod
-        }
-
-        public MenuMode menu = MenuMode.Main;
 
         public static bool IsSavedRepo (ModMetaData mod) {
             return settings.repoList.Contains (mod.PackageId);
@@ -66,27 +48,26 @@ namespace GitUpdater {
 
         public void RemoveModRepo (ModMetaData mod) {
             settings.repoList.Remove (mod.PackageId);
-            reposCached = false;
+            UpdaterMenus.reposCached = false;
         }
 
         /// <summary>
         /// Used for checking if a mod can be updated, according to onlyLocal.
         /// </summary>
         /// <param name="mod">The mod metadata to inspect</param>
-        /// <param name="onlyLocal">Whether or not to restrict to local files only</param>
         /// <returns>Whether or not the mod can be updated</returns>
-        public static bool CanBeUpdated (ModMetaData mod, bool onlyLocal) {
-            return !mod.OnSteamWorkshop || !onlyLocal;   // Same thing as "onlyLocal ? mod.SteamAppId == 0 : true", just with fewer steps
+        public static bool CanBeUpdated (ModMetaData mod) {
+            return !mod.OnSteamWorkshop || !settings.onlyLocal;   // Same thing as "onlyLocal ? mod.SteamAppId == 0 : true", just with fewer steps
         }
 
         public UpdaterMod (ModContentPack content) : base(content) {
             settings = GetSettings<Settings> ();
-            lastLocalRuleState = settings.onlyLocal;    // Require local update
+            UpdaterMenus.lastLocalRuleState = settings.onlyLocal;    // Require local update
             string isManualStr = settings.requireManual ? "not" : "automatically";
             GitUpdateCore.LogMsg ($"Settings loaded. Will {isManualStr} update repositories right now.", GitUpdateCore.LogMode.Event);
 
             if (!settings.requireManual)
-                GitUpdateCore.UpdateRepos (settings.listHandling, settings.onlyLocal);
+                GitUpdateCore.UpdateRepos (settings);
 
             // Cleanse any mods in our list that were removed
             // Using ToList to create a copy; this will avoid the mysterious error "Collection was modified; enumeration operation may not execute."
@@ -95,145 +76,8 @@ namespace GitUpdater {
                     settings.repoList.Remove (id);
         }
 
-        private void ListMods (Listing_Standard listingStd, Func<ModMetaData, bool> condition, Action<ModMetaData> buttonAction, Rect area, ref List<ModMetaData> cache, ref bool isClean) {
-            area.y += listingStd.CurHeight;
-
-            Rect inner = new Rect (area);
-            inner.width -= 20;
-
-            if (!isClean) {
-                cache = new List<ModMetaData> (GitUpdateCore.GetModsOfCondition (m => condition (m) && CanBeUpdated (m, settings.onlyLocal)));
-                isClean = true;
-            }
-
-            inner.height = cache.Count () * ITEM_HEIGHT;
-
-            Rect itemRect = new Rect (0f, area.y, inner.width, ITEM_HEIGHT);
-
-            Widgets.BeginScrollView (area, ref scrollPos, inner);
-            foreach (ModMetaData mod in cache) {
-                bool isPressed = Widgets.ButtonText (itemRect, mod.Name);
-                itemRect.y += ITEM_HEIGHT;
-                if (isPressed) {
-                    buttonAction (mod);
-                    isClean = false;
-                }
-            }
-            Widgets.EndScrollView ();
-
-            listingStd.Gap (area.height);
-        }
-
-        public static IDActions GenerateActions<TEnum> (Action<TEnum> action, string extraPrefix = "") where TEnum : Enum {
-            TEnum[] vals = (TEnum[])Enum.GetValues (typeof (TEnum));
-            IEnumerable<string> names = vals.Select (v => GitUpdateCore.PrefixTranslateItem (v, extraPrefix));
-
-            IDActions idActions = new IDActions ();
-            for (int i = 0; i < vals.Length; i++) {
-                TEnum val = vals[i];
-                string name = names.ElementAt (i);
-
-                idActions.Add (name, () => action (val));
-            }
-            return idActions;
-        }
-
-        private List<FloatMenuOption> GenerateFloatOptions<TEnum> (Action<TEnum> action, string extraPrefix = "") where TEnum : Enum {
-            var enumerable = GenerateActions (action, extraPrefix).Select (kv => new FloatMenuOption (kv.Key, kv.Value));
-            return new List<FloatMenuOption> (enumerable);
-        }
-
-        private void PresentFloatOptions<TEnum> (Action<TEnum> action, string extraPrefix = "") where TEnum : Enum {
-            var options = GenerateFloatOptions (action, extraPrefix);
-            Find.WindowStack.Add (new FloatMenu (options));
-        }
-
-        private void RenderMainMenu (Rect rect, Listing_Standard listingStd, Rect modsArea) {
-            listingStd.CheckboxLabeled ("GU.RequireManual".Translate (), ref settings.requireManual);
-            listingStd.CheckboxLabeled ("GU.OnlyLocal".Translate (), ref settings.onlyLocal);
-            listingStd.CheckboxLabeled ("GU.PruneOld".Translate (), ref settings.pruneOld);
-            bool chooseConflict = listingStd.LabeledButton ("GU.FCStrat".Translate (), GitUpdateCore.PrefixTranslateItem (settings.onFileConflict, "FC"), rect.width, 0.25f, 5f);
-            listingStd.Label ("GU.Diff3Implement".Translate ().Colorize (Color.red));
-
-            if (chooseConflict)
-                PresentFloatOptions<CheckoutFileConflictStrategy> (cfs => settings.onFileConflict = cfs, "FC");
-
-            listingStd.Label ("GU.Repos".Translate ());
-            // Temp cache since we don't want to do much
-            List<ModMetaData> savedMods = settings.repoList.ConvertAll (id => ModLister.GetModWithIdentifier (id));
-            ListMods (
-                listingStd,
-                IsSavedRepo,
-                RemoveModRepo,
-                modsArea,
-                ref savedMods,
-                ref savedReposCached
-            );
-
-            bool[] listMgrRow = listingStd.ButtonTextRow ( new TaggedString[] { "GU.Add".Translate (), GitUpdateCore.PrefixTranslateItem (settings.listHandling) },
-                                                            rect.width, 5f, ITEM_HEIGHT
-                                                            );
-            if (listMgrRow[0])
-                menu = MenuMode.AddMod;
-            if (listMgrRow[1])
-                PresentFloatOptions<Settings.ListMode> (lm => settings.listHandling = lm);
-
-            if (settings.requireManual) {
-                listingStd.GapLine ();
-
-                bool doManual = listingStd.ButtonText ("GU.ManualUpdate".Translate ());
-                if (doManual) {
-                    GitUpdateCore.UpdateRepos (settings.listHandling, settings.onlyLocal);
-                    needsRestart = true;
-                }
-            }
-
-            if (needsRestart)
-                listingStd.Label ("GU.RestartRequired".Translate ());
-        }
-
-        private void RenderAddMenu (Rect rect, Listing_Standard listingStd, Rect modsArea) {
-            // Only allow repositories not in our list
-            ListMods (
-                listingStd,
-                IsUnsavedRepo,
-                AddModRepo,
-                modsArea,
-                ref cachedRepos,
-                ref reposCached
-            );
-
-            listingStd.GapLine ();
-
-            bool goBack = listingStd.ButtonText ("GU.Back".Translate ());
-            if (goBack)
-                menu = MenuMode.Main;
-        }
-
         public override void DoSettingsWindowContents (Rect rect) {
-            // Cache needs to be refreshed if the option is changed
-            if (lastLocalRuleState != settings.onlyLocal) {
-                lastLocalRuleState = settings.onlyLocal;
-                savedReposCached = false;
-                reposCached = false;
-            }
-
-            var listingStd = new Listing_Standard ();
-            var modsArea = new Rect (0f, 0f, rect.width, ITEM_HEIGHT * 10);
-
-            listingStd.Begin (rect);
-
-            switch (menu) {
-                case MenuMode.Main:
-                    RenderMainMenu (rect, listingStd, modsArea);
-                    break;
-                case MenuMode.AddMod:
-                    RenderAddMenu (rect, listingStd, modsArea);
-                    break;
-            }
-
-            listingStd.End ();
-
+            UpdaterMenus.RenderSettingsWindow (rect, this);
             base.DoSettingsWindowContents (rect);
         }
 

@@ -112,10 +112,14 @@ namespace GitUpdater {
                     .ToList ();
         }
 
-        public static void UpdateRepos (ListMode listMode, bool onlyLocal) {
+        public static List<ModMetaData> GetUpdateableModsOfCondition (Func<ModMetaData, bool> condition) {
+            return GetModsOfCondition (m => condition (m) && UpdaterMod.CanBeUpdated (m));
+        }
+
+        public static void UpdateRepos (UpdaterMod.Settings settings) {
             // Not sure if I can trust "isSteamWorkshop"
             Func<ModMetaData, bool> condition = null;
-            switch (listMode) {
+            switch (settings.listHandling) {
                 case ListMode.Whitelist:
                     condition = UpdaterMod.IsSavedRepo;
                     break;
@@ -125,8 +129,8 @@ namespace GitUpdater {
                 default:
                     throw new NotImplementedException ("Unknown list mode");
             }
-            List<ModMetaData> mods = GetModsOfCondition (m => condition (m) && UpdaterMod.CanBeUpdated (m, onlyLocal));
-            LogMsg ($"Looking for updates in {mods.Count ()} mod(s) (Mode: {listMode}, Only local: {onlyLocal})", LogMode.Event);
+            List<ModMetaData> mods = GetUpdateableModsOfCondition (condition);
+            LogMsg ($"Looking for updates in {mods.Count ()} mod(s) (Mode: {settings.listHandling}, Only local: {settings.onlyLocal})", LogMode.Event);
 
             foreach (ModMetaData mod in mods) {
                 string modPath = mod.RootDir.FullName;
