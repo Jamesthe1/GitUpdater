@@ -87,7 +87,8 @@ namespace GitUpdater {
             listingStd.CheckboxLabeled ("GU.OnlyLocal".Translate (), ref settings.onlyLocal);
             listingStd.CheckboxLabeled ("GU.PruneOld".Translate (), ref settings.pruneOld);
             bool chooseConflict = listingStd.LabeledButton ("GU.FCStrat".Translate (), GitUpdateCore.PrefixTranslateItem (settings.onFileConflict, "FC"), rect.width, 0.25f, 5f);
-            listingStd.Label ("GU.Diff3Implement".Translate ().Colorize (Color.red));
+            if (settings.onFileConflict == CheckoutFileConflictStrategy.Diff3)
+				listingStd.Label ("GU.Diff3Implement".Translate ().Colorize (Color.red));
 
             if (chooseConflict)
                 PresentFloatOptions<FCStrat> (fcs => UpdaterMod.settings.onFileConflict = fcs, "FC");
