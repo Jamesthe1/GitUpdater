@@ -7,11 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitUpdater", "GitUpdater.cs
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		1.6|Any CPU = 1.6|Any CPU
 		1.5|Any CPU = 1.5|Any CPU
 		1.4|Any CPU = 1.4|Any CPU
 		1.3|Any CPU = 1.3|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78D4411C-FA50-4F9C-B8FF-7E8B3BB280D1}.1.6|Any CPU.ActiveCfg = 1.6|Any CPU
+		{78D4411C-FA50-4F9C-B8FF-7E8B3BB280D1}.1.6|Any CPU.Build.0 = 1.6|Any CPU
 		{78D4411C-FA50-4F9C-B8FF-7E8B3BB280D1}.1.5|Any CPU.ActiveCfg = 1.5|Any CPU
 		{78D4411C-FA50-4F9C-B8FF-7E8B3BB280D1}.1.5|Any CPU.Build.0 = 1.5|Any CPU
 		{78D4411C-FA50-4F9C-B8FF-7E8B3BB280D1}.1.4|Any CPU.ActiveCfg = 1.4|Any CPU

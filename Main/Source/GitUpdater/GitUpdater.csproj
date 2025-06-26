@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netframework4.7.2</TargetFramework>
+	<BelowVersion16>$([MSBuild]::VersionLessThan('$(Configuration)', '1.6'))</BelowVersion16>
+	<AboveOrAtVersion16>$([MSBuild]::VersionGreaterThanOrEquals('$(Configuration)', '1.6'))</AboveOrAtVersion16>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,25 +16,37 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.TextCoreModule">
-      <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextCoreModule.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
   </ItemGroup>
+  
+  <ItemGroup Condition="$(BelowVersion16)">
+    <Reference Include="UnityEngine.TextCoreModule">
+      <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextCoreModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  
+  <ItemGroup Condition="$(AboveOrAtVersion16)">
+    <Reference Include="UnityEngine.TextCoreFontEngineModule">
+      <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextCoreTextEngineModule">
+      <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 
   <ItemGroup>
-    <None Update="git2-a418d9d.dll">
+    <None Update="git2-$(BuildHash).dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="libgit2-a418d9d.so">
+    <None Update="libgit2-$(BuildHash).so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="rem Spaces are apparently needed between the path and end quote. Why Microsoft&#xD;&#xA;robocopy &quot;$(TargetDir) &quot; &quot;..\..\..\$(ConfigurationName)\Assemblies &quot; $(TargetFileName) LibGit2Sharp.dll&#xD;&#xA;.\movehashes.cmd &quot;$(TargetDir)&quot;&#xD;&#xA;rmdir bin /S /Q&#xD;&#xA;if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25" />
+    <Exec Command="rem Spaces are apparently needed between the path and end quote. Why Microsoft&#xD;&#xA;robocopy &quot;$(TargetDir) &quot; &quot;..\..\..\$(ConfigurationName)\Assemblies &quot; $(TargetFileName) LibGit2Sharp.dll&#xD;&#xA;if %25errorlevel%25 gtr 4 exit %25errorlevel%25&#xD;&#xA;.\movehashes.cmd &quot;$(TargetDir)&quot;&#xD;&#xA;rmdir bin /S /Q" />
   </Target>
 
 </Project>
