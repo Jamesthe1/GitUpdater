@@ -9,8 +9,8 @@ using System.Collections.Generic;
 namespace GitUpdater {
     using ListMode = UpdaterMod.Settings.ListMode;
     public static class GitUpdateCore {
-        // IF YOU ARE FORKING THIS, PLEASE EDIT THIS DATA
-        private const string email = "james.inness.work@gmail.com";
+        // personal info not relevant
+        private const string email = "na@na.na";
         public const string modName = "GitUpdater";
         private const string prefix = "GU";
 
