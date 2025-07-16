@@ -63,8 +63,7 @@ namespace GitUpdater {
 
             var refSpecs = remote.FetchRefSpecs.Select (r => r.Specification);
             var fOptions = new FetchOptions ();
-            if (UpdaterMod.settings.pruneOld)
-                fOptions.Prune = true;
+            fOptions.Prune = UpdaterMod.settings.pruneOld;
 
             var mOptions = new MergeOptions ();
             mOptions.CommitOnSuccess = true;
@@ -97,7 +96,7 @@ namespace GitUpdater {
                         LogMsg ($"Non-fast-forward to new head {repo.Head.FriendlyName}.", LogMode.Event);
                         return;
                     case MergeStatus.Conflicts:
-                        LogMsg ($"Conflicts appeared during merge. You may have to implement these manually, or do it quick and dirty by using the \"{ "GU.FC.Theirs".Translate () }\" option.", LogMode.Warn);
+                        LogMsg ($"Conflicts appeared during merge. You may have to implement these manually, or do it quick and dirty by using the \"{"GU.FC.Theirs".Translate ()}\" option.", LogMode.Warn);
                         return;
                 }
             }
