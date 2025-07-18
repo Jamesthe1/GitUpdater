@@ -1,0 +1,6 @@
+[submodule "Main/Source/libgit2sharp.noexec"]
+	path = Main/Source/libgit2sharp.noexec
+	url = git@github.com:Jamesthe1/libgit2sharp.noexec.git
+[submodule "Main/Source/libgit2sharp.nativebinaries.noexec"]
+	path = Main/Source/libgit2sharp.nativebinaries.noexec
+	url = git@github.com:Jamesthe1/libgit2sharp.nativebinaries.noexec.git

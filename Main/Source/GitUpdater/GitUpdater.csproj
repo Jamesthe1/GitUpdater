@@ -45,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="0.31.0" />
+    <PackageReference Include="LibGit2Sharp.NoExec" Version="[0.31.1-preview.0.4]" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
