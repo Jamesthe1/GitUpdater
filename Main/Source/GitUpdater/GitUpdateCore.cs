@@ -5,6 +5,7 @@ using System.IO;
 using Verse;
 using LibGit2Sharp;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace GitUpdater {
     using ListMode = UpdaterMod.Settings.ListMode;
@@ -58,6 +59,12 @@ namespace GitUpdater {
 
             if (remote == null) {
                 LogMsg ("Repository has no origin, skipping", LogMode.Warn);
+                return;
+            }
+
+            var regex = new Regex (@"^git@");
+            if (regex.IsMatch (remote.Url)) {
+                LogMsg ("Can't get SSH urls at the moment, sorry :(", LogMode.Warn);
                 return;
             }
 

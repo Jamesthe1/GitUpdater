@@ -7,7 +7,7 @@ if "%~1" == "help" (
 
 rem Spaces are apparently needed between the path and end quote. Why Microsoft
 echo Moving assemblies...
-robocopy "bin\%~1 " "..\..\..\%~1\Assemblies " GitUpdater.dll LibGit2Sharp.NoExec.dll /mov
+robocopy "bin\%~1 " "..\..\..\%~1\Assemblies " GitUpdater.dll LibGit2Sharp.dll /mov
 if %errorlevel% gtr 4 exit %errorlevel%
 echo Moving Linux natives...
 robocopy "bin\%~1\lib\linux-x64 " "..\..\Natives " *.so /mov
