@@ -1,3 +1,0 @@
-[submodule "Main/Source/libgit2sharp"]
-	path = Main/Source/libgit2sharp
-	url = git@github.com:Jamesthe1/libgit2sharp.git
